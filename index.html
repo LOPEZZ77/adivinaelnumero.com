@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adivina el número</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 700px;
+            margin: auto;
+            margin-top: 50px;
+            color: #333;
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        p {
+            color: #666;
+        }
+        input[type="number"] {
+            padding: 10px;
+            width: 150px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .animated {
+            animation: fadeIn 1s forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container animated" id="gameContainer" style="display: none;">
+        <h1>Adivina el número</h1>
+        <p>Selecciona un nivel:</p>
+        <select id="levelSelect" onchange="changeLevel()">
+            <option value="1">Fácil</option>
+            <option value="2">Intermedio</option>
+            <option value="3">Difícil</option>
+        </select>
+        <br>
+        <button onclick="startGame()" style="background-color: green;">Comenzar</button>
+    </div>
+
+    <div class="container" id="guessContainer" style="display: none;">
+        <h1>Adivina el número</h1>
+        <p>Intenta adivinar el número:</p>
+        <input type="number" id="guessInput">
+        <br>
+        <button onclick="checkGuess()" style="background-color: green;">Adivinar</button>
+        <button onclick="resetGame()" style="background-color: green;">Reiniciar</button>
+        <button onclick="giveHint()" style="background-color: green;">Pista</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        let targetNumber;
+        let attempts = 0;
+        let currentLevel = 1;
+
+        function changeLevel() {
+            currentLevel = parseInt(document.getElementById("levelSelect").value);
+            setGameStyle(currentLevel);
+        }
+
+        function setGameStyle(level) {
+            const body = document.querySelector("body");
+            switch (level) {
+                case 1:
+                    body.style.background = "linear-gradient(to right, #FF6B6B, #556270)";
+                    break;
+                case 2:
+                    body.style.background = "linear-gradient(to right, #FFD166, #06D6A0)";
+                    break;
+                case 3:
+                    body.style.background = "linear-gradient(to right, #EF476F, #FFD166)";
+                    break;
+            }
+        }
+
+        function startGame() {
+            const selectedLevel = currentLevel;
+            let maxNumber;
+            if (selectedLevel === 1) {
+                maxNumber = 50;
+            } else if (selectedLevel === 2) {
+                maxNumber = 100;
+            } else if (selectedLevel === 3) {
+                maxNumber = 200;
+            }
+            targetNumber = Math.floor(Math.random() * maxNumber) + 1;
+            attempts = 0;
+            document.getElementById("result").innerHTML = "";
+            document.getElementById("guessInput").value = "";
+            document.getElementById("gameContainer").style.display = "none";
+            document.getElementById("guessContainer").style.display = "block";
+        }
+
+        function checkGuess() {
+            const guess = parseInt(document.getElementById("guessInput").value);
+
+            if (isNaN(guess) || guess < 1 || guess > 200) {
+                document.getElementById("result").innerHTML = "Por favor, ingresa un número válido.";
+                return;
+            }
+
+            attempts++;
+
+            if (guess === targetNumber) {
+                document.getElementById("result").innerHTML = `¡Felicidades! ¡Has adivinado el número ${targetNumber} en ${attempts} intentos!`;
+            } else if (guess < targetNumber) {
+                document.getElementById("result").innerHTML = "El número que buscas es mayor.";
+            } else {
+                document.getElementById("result").innerHTML = "El número que buscas es menor.";
+            }
+        }
+
+        function resetGame() {
+            document.getElementById("gameContainer").style.display = "block";
+            document.getElementById("guessContainer").style.display = "none";
+            document.getElementById("result").innerHTML = "";
+        }
+
+        function giveHint() {
+            const hint = targetNumber % 2 === 0 ? "El número es par." : "El número es impar.";
+            document.getElementById("result").innerHTML = hint;
+        }
+
+        setGameStyle(currentLevel);
+    </script>
+
+    <script>
+        setTimeout(function() {
+            document.getElementById("gameContainer").style.display = "block";
+            document.getElementById("gameContainer").classList.add("animated");
+        }, 500);
+    </script>
+</body>
+</html>in
